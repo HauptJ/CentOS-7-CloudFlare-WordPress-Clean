@@ -1,0 +1,22 @@
+---
+- name: Install 
+  yum: name=certbot-nginx state=present
+  
+- name: insert firewalld rule for letsencrypt-nginx
+  firewalld: port=80/tcp permanent=true state=enabled immediate=yes
+  ignore_errors: yes
+
+
+# This method will require user input into a prompt with will likely fail
+#- name: Create letsencrypt certificate
+#  shell: certbot --nginx -d {{server_hostname}} -d www.{{server_hostname}}
+#  args:
+#	creates: /etc/letsencrypt/live/{{server_hostname}}
+
+- role: letsencrypt
+       letsencrypt_webroot_path: /srv/wordpress/
+       letsencrypt_email: {{admin_email}}
+       letsencrypt_cert_domains:
+        - www.{{server_hostname}}
+        - {{server_hostname}}
+       letsencrypt_renewal_command_args: '--renew-hook "systemctl restart nginx"'
