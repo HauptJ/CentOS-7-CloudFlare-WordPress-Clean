@@ -1,5 +1,6 @@
 ---
 # Disable SELinux - TEMP FIX
+# Probable cause of issue: self signed SSL certificate
 - name: Disable SELinux
   selinux:
     state: disabled
@@ -22,8 +23,17 @@
 - name: Create the GPG key for REMI
   copy: src=RPM-GPG-KEY-remi dest=/etc/pki/rpm-gpg
   
+# Install VIM text editor for live testing configuration changes
+- name: install vim
+  apt: name=vim update_cache=yes state=present state=latest
+  
+# Firewalld install and configuration
 - name: Install Firewalld
   yum: name=firewalld state=present
 
 - name: Firewalld service state
   service: name=firewalld state=started enabled=yes
+  
+# TODO
+# Install and configure fail2ban to protect against SSH brute force attacks
+  
