@@ -23,6 +23,7 @@
 - name: Start MariaDB Service
   service: name=mariadb state=started enabled=yes
 
+# This is a security risk that should be removed. It is not necessary for the environment this Playbook is provisioning.
 - name: insert firewalld rule
   firewalld: port={{ mysql_port }}/tcp permanent=true state=enabled immediate=yes
   ignore_errors: yes
