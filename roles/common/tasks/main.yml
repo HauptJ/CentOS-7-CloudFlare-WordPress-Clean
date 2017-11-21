@@ -23,9 +23,13 @@
 - name: Create the GPG key for REMI
   copy: src=RPM-GPG-KEY-remi dest=/etc/pki/rpm-gpg
   
+# Install HTOP for process monitoring
+- name: install htop
+  yum: name=htop state=present
+  
 # Install VIM text editor for live testing configuration changes
 - name: install vim
-  apt: name=vim update_cache=yes state=present state=latest
+  yum: name=vim state=present
   
 # Firewalld install and configuration
 - name: Install Firewalld
