@@ -1,0 +1,5 @@
+---
+# Includes necessary handler to restart the server from common
+
+dependencies:
+- { role: common }

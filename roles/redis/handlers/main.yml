@@ -1,0 +1,8 @@
+---
+# Handlers to restart redis and all dependent web services
+
+- name: Restart redis
+  service: name=redis state=restarted
+  notify:
+    - restart nginx
+    - restart php-fpm

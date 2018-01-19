@@ -1,0 +1,21 @@
+---
+# Tasks to install firewalld and fail2ban
+
+- name: Install Firewalld
+  yum: name=firewalld state=present
+
+- name: Install Fail2ban with FirewallD
+  yum: name=fail2ban-firewalld state=present
+
+- name: Copy fail2ban.local configuration
+  template: src=fail2ban.local dest=/etc/fail2ban/
+
+- name: Copy jail.local configuration for fail2ban
+  template: src=jail.local dest=/etc/fail2ban/
+  notify: restart firewalld
+
+- name: Firewalld service state
+  service: name=firewalld state=started enabled=yes
+
+- name: fail2ban service state
+  service: name=fail2ban state=started enabled=yes

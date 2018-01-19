@@ -1,0 +1,9 @@
+---
+# Handler to handle firewalld and fail2ban notifications
+
+- name: restart firewalld
+  service: name=firewalld state=restarted
+  notify: restart fail2ban
+
+- name: restart fail2ban
+  service: name=fail2ban state=restarted

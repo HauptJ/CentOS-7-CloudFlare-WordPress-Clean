@@ -1,0 +1,11 @@
+---
+- name: Configures CloudFlare DNS for server
+  hosts: localhost
+  #remote_user: root
+  #remote_user: centos
+  #become: yes
+  #become_method: sudo
+  #become_user: root
+
+  roles:
+    - cloudflare

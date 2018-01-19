@@ -1,0 +1,53 @@
+---
+# Tasks to enable IPv6 on the server
+
+  # cloud-init prevents modification of /etc/sysconfig/network-scripts/ifcfg-eth0
+- name: Uninstall cloud-init
+  yum:
+    name: cloud-init
+    state: removed
+  become: yes
+  become_method: sudo
+  become_user: root
+  when: ipv6_setup == true
+
+- name: ifcfg-eth0 IPV6INIT=yes
+  lineinfile:
+    path: /etc/sysconfig/network-scripts/ifcfg-eth0
+    create: yes
+    state: present
+    regexp: '^IPV6INIT='
+    line: 'IPV6INIT=yes'
+
+- name: ifcfg-eth0 IPV6ADDR={{ ipv6_addr }}
+  lineinfile:
+    path: /etc/sysconfig/network-scripts/ifcfg-eth0
+    create: yes
+    state: present
+    regexp: '^IPV6ADDR='
+    line: 'IPV6ADDR={{ ipv6_addr }}'
+
+- name: ifcfg-eth0 IPV6_DEFAULTGW={{ ipv6_gate }}
+  lineinfile:
+    path: /etc/sysconfig/network-scripts/ifcfg-eth0
+    create: yes
+    state: present
+    regexp: '^IPV6_DEFAULTGW='
+    line: 'IPV6_DEFAULTGW={{ ipv6_gate }}'
+
+- name: route6-eth0 {{ ipv6_addr }} dev eth0
+  lineinfile:
+    path: /etc/sysconfig/network-scripts/route6-eth0
+    create: yes
+    state: present
+    regexp: '^dev eth0'
+    line: '{{ ipv6_addr }} dev eth0'
+
+- name: route6-eth0 default via {{ ipv6_gate }}
+  lineinfile:
+    path: /etc/sysconfig/network-scripts/route6-eth0
+    create: yes
+    state: present
+    regexp: '^default via'
+    line: 'default via {{ ipv6_gate }}'
+    notify: restart server

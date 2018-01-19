@@ -1,23 +1,78 @@
 ---
 # Variables listed here are applicable to all host groups
-wp_version: 4.8.2
-wp_sha256sum: c2c65d156e1f3f1d81bbb61a4bb7267b108a09130d46d33b9b9c6b2e93e16752
+
+##### SE Linux #####
+
+# Security Enhanced Linux Disable or Enable
+sel_disable: false
+
+##### MariaDB #####
 
 # MySQL settings
 mysqlservice: mysqld
 mysql_port: 3306
 
-# These are the WordPress database settings
-wp_db_name: wordPress
-wp_db_user: wordPressUser
-wp_db_password: wordPressPassword
+##### Redis #####
+
+# Redis Cache setting
+# See redis.config
+
+rd_mem: 512mb
+rd_mem_pol: allkeys-lru
+
+##### NGINX #####
 
 # This is used for the nginx server configuration, but access to the
 # WordPress site is not restricted by a named host.
-nginx_ipv6: 0000:0000:000:00::00:0001
+nginx_ipv6:  2607:5300:201:2100::1:111
 nginx_port: 443
-server_hostname: example.com
-admin_email: bob@example.com
+server_hostname: test.example.com
+admin_email: email@example.com
+
+# htpasswd settings
+htpasswd_user: josh
+htpasswd_pass: 1337P4ss!1
+
+##### Network #####
+
+# server network settings
+ipv4_addr: 111.111.111.111
+ipv6_addr: 2607:5300:201:2100::1:111/128
+ipv6_gate: 2607:5300:201:2100::1
+ipv6_setup: "false"
+
+##### CloudFlare #####
+
+# CloudFlare settings
+cf_email: email@example.com
+cf_key: get from cloudflare
+
+cf_bypass_name: dev.example.com
+cf_new_record: true
+cf_zone_id: get from cloudflare api
+cf_A_id: get from cloudflare api
+cf_AAAA_id: get from cloudflare api
+cf_proxied_AAAA_id: get from cloudflare api
+
+##### Fail2Ban #####
+
+# fail2ban settings
+f2b_whitelist_ip: your device IP
+f2b_destemail: email@example.com
+f2b_sender: email@example.com
+
+##### WordPress #####
+
+# These are the WordPress database settings
+wp_db_name: testWP
+wp_db_user: testWPuser
+wp_db_password: testpass
+
+# WordPress Salt
+wp_cache_salt: salty_salty
+
+wp_version: 4.9.1
+wp_sha256sum: a94ae99cda7666bfd482b36f268ad240a3bde2a66724e1312dabf068a9555100
 
 # Disable All Updates
 # By default automatic updates are enabled, set this value to true to disable all automatic updates
