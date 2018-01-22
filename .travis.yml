@@ -14,8 +14,5 @@ install:
 
 script:
   # check syntax
-  - ansible-playbook site.yml -i "hosts" --syntax-check
-  # check before install
-  #- ansible-playbook site.yml -i "hosts" --check
-  # install
-  #- ansible-playbook site.yml -i "hosts"
+  - ansible-playbook site.yml site.yml --syntax-check
+  - ansible-playbook dns.yml site.yml --syntax-check

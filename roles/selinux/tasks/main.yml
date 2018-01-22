@@ -6,7 +6,6 @@
     policy: targeted
     state: enforcing
   when: sel_disable == false
-  notify: restart server
 
   # necessary?
 - name: install selinux-policy-targeted
@@ -21,4 +20,5 @@
   selinux:
     state: disabled
   when: sel_disable == true
-  notify: restart server
+
+- include_tasks: restart.yml

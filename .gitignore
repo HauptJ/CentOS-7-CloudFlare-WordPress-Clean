@@ -1,0 +1,8 @@
+# Ansible retry files
+*.retry
+
+# Ansible host files
+hosts
+
+# Variable Settings
+#/group_vars/

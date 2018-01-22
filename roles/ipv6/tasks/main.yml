@@ -6,10 +6,6 @@
   yum:
     name: cloud-init
     state: removed
-  become: yes
-  become_method: sudo
-  become_user: root
-  when: ipv6_setup == true
 
 - name: ifcfg-eth0 IPV6INIT=yes
   lineinfile:
@@ -50,4 +46,5 @@
     state: present
     regexp: '^default via'
     line: 'default via {{ ipv6_gate }}'
-    notify: restart server
+
+- include_tasks: restart.yml

@@ -9,8 +9,31 @@
    - libselinux-python
    - libsemanage-python
 
-#- name: Configure SELinux to start mysql on any port
-#  seboolean: name=mysql_connect_any state=true persistent=yes
+- name: Configure SELinux to start mysql on any port
+  seboolean: name=mysql_connect_any state=true persistent=yes
+  when: sel_disable == false
+
+# SELinux policies: https://mariadb.com/kb/en/library/what-to-do-if-mariadb-doesnt-start/
+
+- name: set the SELinux policy for Mariadb data directory
+  sefcontext:
+    target: '/var/lib/mysql(/.*)?'
+    setype: mysqld_db_t
+    state: present
+    reload: yes
+  when: sel_disable == false
+
+- name: Reload SELinux connection for MariaDB data directory
+  command: restorecon -Rv /var/lib/mysql
+  when: sel_disable == false
+
+- name: set the SELinux policy for Mariadb log file
+  sefcontext:
+    target: '/var/log/mysql(/.*)?'
+    setype: mysqld_log_t
+    state: present
+    reload: yes
+  when: sel_disable == false
 
 - name: Create Mysql configuration file
   template: src=my.cnf.j2 dest=/etc/my.cnf
@@ -19,6 +42,10 @@
 
 - name: Create MariaDB log file
   file: path=/var/log/mysqld.log state=touch owner=mysql group=mysql mode=0775
+
+- name: Reload SELinux connection for mysqld.log
+  command: restorecon -v /var/log/mysqld.log
+  when: sel_disable == false
 
 - name: Start MariaDB Service
   service: name=mariadb state=started enabled=yes

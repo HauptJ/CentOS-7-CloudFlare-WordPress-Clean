@@ -38,34 +38,91 @@
 - name: Change ownership of WordPress installation
   file: path=/srv/wordpress/ owner=wordpress group=wordpress state=directory recurse=yes
 
+#- name: set the SELinux policy for the Wordpress directory
+#  command: semanage fcontext -a -t httpd_sys_content_t "/srv/wordpress(/.*)?"
+#  when: sel_disable == false
+
 - name: set the SELinux policy for the Wordpress directory
-  command: semanage fcontext -a -t httpd_sys_content_t "/srv/wordpress(/.*)?"
+  sefcontext:
+    target: '/srv/wordpress(/.*)?'
+    setype: httpd_sys_content_t
+    state: present
+    reload: yes
   when: sel_disable == false
+
+#- name: set the SELinux policy for wp-config.php
+#  command: semanage fcontext -a -t httpd_sys_script_exec_t "/srv/wordpress/wp-config\.php"
+#  when: sel_disable == false
 
 - name: set the SELinux policy for wp-config.php
-  command: semanage fcontext -a -t httpd_sys_script_exec_t "/srv/wordpress/wp-config\.php"
+  sefcontext:
+    target: '/srv/wordpress/wp-config\.php'
+    setype: httpd_sys_script_exec_t
+    state: present
+    reload: yes
   when: sel_disable == false
+
+#- name: set the SELinux policy for wp-content directory
+#  command: semanage fcontext -a -t httpd_sys_rw_content_t "/srv/wordpress/wp-content(/.*)?"
+#  when: sel_disable == false
 
 - name: set the SELinux policy for wp-content directory
-  command: semanage fcontext -a -t httpd_sys_rw_content_t "/srv/wordpress/wp-content(/.*)?"
+  sefcontext:
+    target: '/srv/wordpress/wp-content(/.*)?'
+    setype: httpd_sys_rw_content_t
+    state: present
+    reload: yes
   when: sel_disable == false
+
+#- name: set the SELinux policy for the *.php files
+#  command: semanage fcontext -a -t httpd_sys_script_exec_t "/srv/wordpress/.*\.php"
+#  when: sel_disable == false
 
 - name: set the SELinux policy for the *.php files
-  command: semanage fcontext -a -t httpd_sys_script_exec_t "/srv/wordpress/.*\.php"
+  sefcontext:
+    target: '/srv/wordpress/.*\.php'
+    setype: httpd_sys_script_exec_t
+    state: present
+    reload: yes
   when: sel_disable == false
+
+#- name: set the SELinux policy for the Upgrade directory
+#  command: semanage fcontext -a -t httpd_sys_rw_content_t "/srv/wordpress/wp-content/upgrade(/.*)?"
+#  when: sel_disable == false
 
 - name: set the SELinux policy for the Upgrade directory
-  command: semanage fcontext -a -t httpd_sys_rw_content_t "/srv/wordpress/wp-content/upgrade(/.*)?"
+  sefcontext:
+    target: '/srv/wordpress/wp-content/upgrade(/.*)?'
+    setype: httpd_sys_rw_content_t
+    state: present
+    reload: yes
   when: sel_disable == false
+
+#- name: set the SELinux policy for the Uploads directory
+#  command: semanage fcontext -a -t httpd_sys_rw_content_t "/srv/wordpress/wp-content/uploads(/.*)?"
+#  when: sel_disable == false
 
 - name: set the SELinux policy for the Uploads directory
-  command: semanage fcontext -a -t httpd_sys_rw_content_t "/srv/wordpress/wp-content/uploads(/.*)?"
+  sefcontext:
+    target: '/srv/wordpress/wp-content/uploads(/.*)?'
+    setype: httpd_sys_rw_content_t
+    state: present
+    reload: yes
   when: sel_disable == false
+
+#- name: set the SELinux policy for the wp-includes php files
+#  command: semanage fcontext -a -t httpd_sys_script_exec_t "/srv/wordpress/wp-includes/.*\.php"
+#  when: sel_disable == false
 
 - name: set the SELinux policy for the wp-includes php files
-  command: semanage fcontext -a -t httpd_sys_script_exec_t "/srv/wordpress/wp-includes/.*\.php"
+  sefcontext:
+    target: '/srv/wordpress/wp-includes/.*\.php'
+    setype: httpd_sys_script_exec_t
+    state: present
+    reload: yes
   when: sel_disable == false
 
+# Still needed?
 - name: set the SELinux on all the Files
   command: restorecon -Rv /srv/wordpress
   when: sel_disable == false

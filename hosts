@@ -1,2 +1,0 @@
-[wordpress-server]
-localhost ansible_user=root
