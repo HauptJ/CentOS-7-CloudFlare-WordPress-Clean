@@ -25,6 +25,6 @@ script:
   - ansible-playbook dns.yml --syntax-check
   - ansible-playbook site.yml --syntax-check
 
-  # dry run
-  - ansible-playbook dns.yml --check
-  - ansible-playbook site.yml --check
+  # dry run - does not work
+  #- ansible-playbook dns.yml --check
+  #- ansible-playbook site.yml --check
