@@ -1,0 +1,19 @@
+---
+# Auto update
+# Source: https://github.com/geerlingguy/ansible-role-security/blob/master/tasks/autoupdate-RedHat.yml
+- name: Install yum-cron.
+  yum:
+    name: yum-cron
+    state: present
+
+- name: Ensure yum-cron is running and enabled on boot.
+  service:
+    name: yum-cron
+    state: started
+    enabled: yes
+
+- name: Configure autoupdates.
+  lineinfile:
+    dest: "/etc/yum/yum-cron.conf"
+    regexp: '^apply_updates = .+'
+    line: 'apply_updates = yes'

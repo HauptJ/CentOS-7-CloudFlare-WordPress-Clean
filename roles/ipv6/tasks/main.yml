@@ -1,11 +1,14 @@
 ---
 # Tasks to enable IPv6 on the server
 
-  # cloud-init prevents modification of /etc/sysconfig/network-scripts/ifcfg-eth0
-- name: Uninstall cloud-init
-  yum:
-    name: cloud-init
-    state: removed
+- name: Disable Cloud-Init network config
+  lineinfile:
+    path: /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+    create: yes
+    state: present
+    regexp: '^network:'
+    line: 'network: {config: disabled}'
+
 
 - name: ifcfg-eth0 IPV6INIT=yes
   lineinfile:

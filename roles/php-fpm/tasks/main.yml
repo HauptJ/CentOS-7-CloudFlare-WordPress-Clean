@@ -1,6 +1,8 @@
 ---
 - name: Install php-fpm and deps
-  yum: name={{ item }} state=present
+  yum:
+    name: "{{ item }}"
+    state: present
   with_items:
     - php
     - php-fpm
@@ -19,5 +21,7 @@
   notify: restart php-fpm
 
 - name: Copy php-fpm configuration
-  template: src=wordpress.conf dest=/etc/php-fpm.d/
+  template:
+    src: wordpress.conf
+    dest: /etc/php-fpm.d/
   notify: restart php-fpm

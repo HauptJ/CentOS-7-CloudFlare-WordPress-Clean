@@ -3,11 +3,17 @@
 # Source: https://www.digitalocean.com/community/tutorials/how-to-configure-redis-caching-to-speed-up-wordpress-on-ubuntu-14-04
 
 - name: Install redis
-  yum: name=redis state=present
+  yum:
+    name: redis
+    state: present
 
 - name: Copy object-cache.php for Wordpress
-  template: src=object-cache.php dest=/srv/wordpress/wp-content/
+  template:
+    src: object-cache.php
+    dest: /srv/wordpress/wp-content/
 
 - name: Copy redis.conf for Redis
-  template: src=redis.conf dest=/etc/
+  template:
+    src: redis.conf
+    dest: /etc/
   notify: Restart redis

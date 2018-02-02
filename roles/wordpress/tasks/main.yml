@@ -1,16 +1,37 @@
 ---
-- name: Download WordPress
-  get_url: url=http://wordpress.org/wordpress-{{ wp_version }}.tar.gz dest=/srv/wordpress-{{ wp_version }}.tar.gz
-           sha256sum="{{ wp_sha256sum }}"
+- name: Download Latest WordPress
+  get_url:
+    url: https://wordpress.org/latest.tar.gz
+    dest: /srv/wordpress-latest.tar.gz
 
 - name: Extract archive
-  command: chdir=/srv/ /bin/tar xvf wordpress-{{ wp_version }}.tar.gz creates=/srv/wordpress
+  command: chdir=/srv/ /bin/tar xvf wordpress-latest.tar.gz creates=/srv/wordpress
+
+### BROKEN ###
+# Generates: https://ideone.com/CjL77O https://ideone.com/seNzUe https://ideone.com/7kkIJb
+# Result: 403 Forbidden
+#- name: Create WordPress directory
+#  file:
+#    path: /srv/wordpress
+#    state: directory
+
+#- name: Download and extract the latest WordPress
+#  unarchive:
+#    src: https://wordpress.org/latest.tar.gz
+#    dest: /srv/
+#    creates: /srv/wordpress
+#    remote_src: yes
+### BROKEN ###
 
 - name: Add group "wordpress"
-  group: name=wordpress
+  group:
+    name: wordpress
 
 - name: Add user "wordpress"
-  user: name=wordpress group=wordpress home=/srv/wordpress/
+  user:
+    name: wordpress
+    group: wordpress
+    home: /srv/wordpress/
 
 - name: Fetch random salts for WordPress config
   uri:
@@ -21,26 +42,50 @@
   delegate_to: localhost
   become: no
 
-- name: debug
+- name: Print wp_salt
   debug:
     var: wp_salt.content
 
-- name: Create WordPress database
-  mysql_db: name={{ wp_db_name }} state=present
+- name: Create WordPress database {{ wp_db_name }}
+  mysql_db:
+    name: "{{ wp_db_name }}"
+    state: present
+  when: wp_new_db == true
+
+- name: Copy database {{ wp_db_name }} file
+  copy:
+    src: "{{ wp_db_name }}.sql.bz2"
+    dest: /tmp
+  when: wp_new_db == false
+
+- name: Restore {{ wp_db_name }} database
+  mysql_db:
+    name: "{{ wp_db_name }}"
+    state: import
+    target: /tmp/{{ wp_db_name }}.sql.bz2
+  when: wp_new_db == false
 
 - name: Create WordPress database user
-  mysql_user: name={{ wp_db_user }} password={{ wp_db_password }} priv={{ wp_db_name }}.*:ALL host='localhost' state=present
+  mysql_user:
+    name: "{{ wp_db_user }}"
+    password: "{{ wp_db_password }}"
+    priv: "{{ wp_db_name }}.*:ALL"
+    host: 'localhost'
+    state: present
 
 - name: Copy WordPress config file
-  template: src=wp-config.php dest=/srv/wordpress/
+  template:
+    src: wp-config.php
+    dest: /srv/wordpress/
   become: yes
 
 - name: Change ownership of WordPress installation
-  file: path=/srv/wordpress/ owner=wordpress group=wordpress state=directory recurse=yes
-
-#- name: set the SELinux policy for the Wordpress directory
-#  command: semanage fcontext -a -t httpd_sys_content_t "/srv/wordpress(/.*)?"
-#  when: sel_disable == false
+  file:
+    path: /srv/wordpress/
+    owner: wordpress
+    group: wordpress
+    state: directory
+    recurse: yes
 
 - name: set the SELinux policy for the Wordpress directory
   sefcontext:
@@ -50,10 +95,6 @@
     reload: yes
   when: sel_disable == false
 
-#- name: set the SELinux policy for wp-config.php
-#  command: semanage fcontext -a -t httpd_sys_script_exec_t "/srv/wordpress/wp-config\.php"
-#  when: sel_disable == false
-
 - name: set the SELinux policy for wp-config.php
   sefcontext:
     target: '/srv/wordpress/wp-config\.php'
@@ -61,10 +102,6 @@
     state: present
     reload: yes
   when: sel_disable == false
-
-#- name: set the SELinux policy for wp-content directory
-#  command: semanage fcontext -a -t httpd_sys_rw_content_t "/srv/wordpress/wp-content(/.*)?"
-#  when: sel_disable == false
 
 - name: set the SELinux policy for wp-content directory
   sefcontext:
@@ -74,10 +111,6 @@
     reload: yes
   when: sel_disable == false
 
-#- name: set the SELinux policy for the *.php files
-#  command: semanage fcontext -a -t httpd_sys_script_exec_t "/srv/wordpress/.*\.php"
-#  when: sel_disable == false
-
 - name: set the SELinux policy for the *.php files
   sefcontext:
     target: '/srv/wordpress/.*\.php'
@@ -85,10 +118,6 @@
     state: present
     reload: yes
   when: sel_disable == false
-
-#- name: set the SELinux policy for the Upgrade directory
-#  command: semanage fcontext -a -t httpd_sys_rw_content_t "/srv/wordpress/wp-content/upgrade(/.*)?"
-#  when: sel_disable == false
 
 - name: set the SELinux policy for the Upgrade directory
   sefcontext:
@@ -98,10 +127,6 @@
     reload: yes
   when: sel_disable == false
 
-#- name: set the SELinux policy for the Uploads directory
-#  command: semanage fcontext -a -t httpd_sys_rw_content_t "/srv/wordpress/wp-content/uploads(/.*)?"
-#  when: sel_disable == false
-
 - name: set the SELinux policy for the Uploads directory
   sefcontext:
     target: '/srv/wordpress/wp-content/uploads(/.*)?'
@@ -109,10 +134,6 @@
     state: present
     reload: yes
   when: sel_disable == false
-
-#- name: set the SELinux policy for the wp-includes php files
-#  command: semanage fcontext -a -t httpd_sys_script_exec_t "/srv/wordpress/wp-includes/.*\.php"
-#  when: sel_disable == false
 
 - name: set the SELinux policy for the wp-includes php files
   sefcontext:
@@ -122,10 +143,12 @@
     reload: yes
   when: sel_disable == false
 
-# Still needed?
 - name: set the SELinux on all the Files
   command: restorecon -Rv /srv/wordpress
   when: sel_disable == false
 
 - name: Start php-fpm Service
-  service: name=php-fpm state=started enabled=yes
+  service:
+    name: php-fpm
+    state: started
+    enabled: yes
