@@ -14,8 +14,10 @@ sel_disable: false
 ##### MariaDB #####
 
 # MySQL settings
-mysqlservice: mysqld
-mysql_port: 3306
+# If the server / cloud service provider provides a firewall to limit access to certain IP's
+# you can safetly open the MariaDB port. If not, I would advise keeping it closed.
+open_mariadb_port: false
+mariadb_port: 3306
 
 ##### Redis #####
 

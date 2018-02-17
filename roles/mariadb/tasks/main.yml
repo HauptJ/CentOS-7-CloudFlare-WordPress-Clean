@@ -64,3 +64,12 @@
     name: mariadb
     state: started
     enabled: yes
+
+- name: Add firewalld rule for MariaDB to open port {{ mariadb_port }}
+  firewalld:
+    port: "{{ mariadb_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: yes
+  whem: open_mariadb_port == true
+  ignore_errors: true
