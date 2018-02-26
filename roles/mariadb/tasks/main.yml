@@ -71,5 +71,5 @@
     permanent: true
     state: enabled
     immediate: yes
-  whem: open_mariadb_port == true
+  when: open_mariadb_port == true
   ignore_errors: true
