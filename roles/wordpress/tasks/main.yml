@@ -10,16 +10,21 @@
 ### BROKEN ###
 # Generates: https://ideone.com/CjL77O https://ideone.com/seNzUe https://ideone.com/7kkIJb
 # Result: 403 Forbidden
-#- name: Create WordPress directory
-#  file:
-#    path: /srv/wordpress
-#    state: directory
+- name: "Create WordPress directory at {{ wp_dir }}"
+  file:
+    path: "{{ wp_dir }}"
+    state: directory
 
-- name: Download and extract the latest WordPress
+- name: Download the latest version of Wordpress
+  get_url:
+    url: "{{ wp_url }}"
+    dest: "{{ wp_dir }}/latest.tar.gz"
+
+- name: extract the latest WordPress
   unarchive:
-    src: https://wordpress.org/latest.tar.gz
-    dest: /srv/wordpress
-    remote_src: yes
+    src: "{{ wp_dir }}/latest.tar.gz"
+    dest: "{{ wp_dir }}"
+    remote_src: no
 ### BROKEN ###
 
 - name: Add group "wordpress"
@@ -30,11 +35,11 @@
   user:
     name: wordpress
     group: wordpress
-    home: /srv/wordpress/
+    home: "{{ wp_dir }}"
 
 - name: Fetch random salts for WordPress config
   uri:
-    url: https://api.wordpress.org/secret-key/1.1/salt/
+    url: "{{ wp_salt_url }}"
     methond: GET
     return_content: yes
   register: wp_salt
@@ -73,12 +78,11 @@
 - name: Copy WordPress config file
   template:
     src: wp-config.php
-    dest: /srv/wordpress/
-  become: yes
+    dest: "{{ wp_dir }}/wp-config.php"
 
 - name: Change ownership of WordPress installation
   file:
-    path: /srv/wordpress/
+    path: "{{ wp_dir }}"
     owner: wordpress
     group: wordpress
     state: directory
@@ -86,7 +90,7 @@
 
 - name: set the SELinux policy for the Wordpress directory
   sefcontext:
-    target: '/srv/wordpress(/.*)?'
+    target: '{{ wp_dir }}(/.*)?'
     setype: httpd_sys_content_t
     state: present
     reload: yes
@@ -94,7 +98,7 @@
 
 - name: set the SELinux policy for wp-config.php
   sefcontext:
-    target: '/srv/wordpress/wp-config\.php'
+    target: '{{ wp_dir }}/wp-config\.php'
     setype: httpd_sys_script_exec_t
     state: present
     reload: yes
@@ -102,7 +106,7 @@
 
 - name: set the SELinux policy for wp-content directory
   sefcontext:
-    target: '/srv/wordpress/wp-content(/.*)?'
+    target: '{{ wp_dir }}/wp-content(/.*)?'
     setype: httpd_sys_rw_content_t
     state: present
     reload: yes
@@ -110,7 +114,7 @@
 
 - name: set the SELinux policy for the *.php files
   sefcontext:
-    target: '/srv/wordpress/.*\.php'
+    target: '{{ wp_dir }}/.*\.php'
     setype: httpd_sys_script_exec_t
     state: present
     reload: yes
@@ -118,7 +122,7 @@
 
 - name: set the SELinux policy for the Upgrade directory
   sefcontext:
-    target: '/srv/wordpress/wp-content/upgrade(/.*)?'
+    target: '{{ wp_dir }}/wp-content/upgrade(/.*)?'
     setype: httpd_sys_rw_content_t
     state: present
     reload: yes
@@ -126,7 +130,7 @@
 
 - name: set the SELinux policy for the Uploads directory
   sefcontext:
-    target: '/srv/wordpress/wp-content/uploads(/.*)?'
+    target: '{{ wp_dir }}/wp-content/uploads(/.*)?'
     setype: httpd_sys_rw_content_t
     state: present
     reload: yes
@@ -134,14 +138,14 @@
 
 - name: set the SELinux policy for the wp-includes php files
   sefcontext:
-    target: '/srv/wordpress/wp-includes/.*\.php'
+    target: '{{ wp_dir }}/wp-includes/.*\.php'
     setype: httpd_sys_script_exec_t
     state: present
     reload: yes
   when: sel_disable == false
 
 - name: set the SELinux on all the Files
-  command: restorecon -Rv /srv/wordpress
+  command: 'restorecon -Rv {{ wp_dir }}'
   when: sel_disable == false
 
 - name: Start php-fpm Service
