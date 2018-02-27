@@ -1,26 +1,11 @@
 ---
-#- name: Download Latest WordPress
-#  get_url:
-#    url: https://wordpress.org/latest.tar.gz
-#    dest: /srv/wordpress-latest.tar.gz
+- name: Download Latest WordPress
+  get_url:
+    url: https://wordpress.org/latest.tar.gz
+    dest: /srv/wordpress-latest.tar.gz
 
-#- name: Extract archive
-# command: chdir=/srv/ /bin/tar xvf wordpress-latest.tar.gz creates=/srv/wordpress
-
-### BROKEN ###
-# Generates: https://ideone.com/CjL77O https://ideone.com/seNzUe https://ideone.com/7kkIJb
-# Result: 403 Forbidden
-#- name: Create WordPress directory
-#  file:
-#    path: /srv/wordpress
-#    state: directory
-
-- name: Download and extract the latest WordPress
-  unarchive:
-    src: https://wordpress.org/latest.tar.gz
-    dest: /srv/wordpress
-    remote_src: yes
-### BROKEN ###
+- name: Extract WordPress archive
+  command: chdir=/srv/ /bin/tar xvf wordpress-latest.tar.gz creates=/srv/wordpress
 
 - name: Add group "wordpress"
   group:
@@ -74,7 +59,6 @@
   template:
     src: wp-config.php
     dest: /srv/wordpress/
-  become: yes
 
 - name: Change ownership of WordPress installation
   file:
