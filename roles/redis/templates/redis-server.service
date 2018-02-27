@@ -1,0 +1,18 @@
+[Unit]
+Description=Redis Datastore Server
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/redis/redis.pid
+User=redis
+Group=wordpress
+ExecStartPre=/bin/mkdir -p /var/run/redis
+ExecStartPre=/bin/chown redis:wordpress /var/run/redis
+ExecStart=/sbin/start-stop-daemon --start --pidfile /var/run/redis/redis.pid --umask 007 --exec /usr/bin/redis-server -- /etc/redis.conf
+ExecReload=/bin/kill -USR2 $MAINPID
+ExecStop=/usr/bin/redis-cli shutdown
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

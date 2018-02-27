@@ -7,13 +7,39 @@
     name: redis
     state: present
 
-- name: Copy object-cache.php for Wordpress
-  template:
-    src: object-cache.php
-    dest: /srv/wordpress/wp-content/
+- name: Create redis user
+  user:
+    name: redis
+    system: yes
+    shell: /bin/nologin
+    createhome: no
+    groups: wordpress
+
+- name: Create directory for redis pid file
+  file:
+    path: /var/run/redis
+    state: directory
+
+- name: Create directory for redis
+  file:
+    path: /var/run/redis
+    owner: redis
+    group: wordpress
+    recurse: yes
+
+#- name: Copy object-cache.php for Wordpress
+#  template:
+#    src: object-cache.php
+#    dest: /srv/wordpress/wp-content/
 
 - name: Copy redis.conf for Redis
   template:
     src: redis.conf
     dest: /etc/
+
+- name: Enable redis php extension
+  lineinfile:
+    path: /etc/php-zts.d/redis.ini
+    regexp: '^extension='
+    line: 'extension=redis.so'
   notify: Restart redis
