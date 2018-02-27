@@ -38,8 +38,6 @@
     methond: GET
     return_content: yes
   register: wp_salt
-  delegate_to: localhost
-  become: no
 
 - name: Print wp_salt
   debug:

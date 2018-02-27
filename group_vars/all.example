@@ -72,6 +72,7 @@ f2b_sender: alice@srv.example.com
 ##### WordPress #####
 
 # These are the WordPress database settings
+wp_new_db: true
 wp_db_name: testWP
 wp_db_user: testWPuser
 wp_db_password: 1337TestPass
@@ -79,8 +80,6 @@ wp_db_password: 1337TestPass
 # WordPress Salt
 wp_cache_salt: salty_salty
 
-wp_version: 4.9.1
-wp_sha256sum: a94ae99cda7666bfd482b36f268ad240a3bde2a66724e1312dabf068a9555100
 
 # Disable All Updates
 # By default automatic updates are enabled, set this value to true to disable all automatic updates
