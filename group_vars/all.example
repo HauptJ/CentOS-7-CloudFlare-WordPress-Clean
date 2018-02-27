@@ -72,6 +72,7 @@ f2b_sender: alice@srv.example.com
 ##### WordPress #####
 
 # These are the WordPress database settings
+mariadb_root_password: "1337TestPass"
 wp_new_db: true
 wp_db_name: testWP
 wp_db_user: testWPuser
