@@ -43,11 +43,10 @@ define('DB_COLLATE', '');
  * @since 2.6.0
  */
 
-{{ wp_salt.content }}
-
 # WordPress salts
 
-#define('NONCE_SALT', '{{ wp_salt }}');
+{{ wp_salt.content }}
+
 
 # Redis Cache
 define('WP_CACHE_KEY_SALT', '{{ wp_cache_salt }}');
