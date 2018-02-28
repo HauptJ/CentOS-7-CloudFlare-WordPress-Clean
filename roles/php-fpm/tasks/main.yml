@@ -1,5 +1,5 @@
 ---
-- name: install php7 and modules
+- name: "install php7 and modules {{ item }}"
   yum:
     name: "{{ item }}"
     state: present
@@ -21,7 +21,6 @@
 - name: start php-fpm at boot
   service:
     name: nginx
-    state: started
     enabled: yes
 
 - name: link the systemd service to "php-fpm"
@@ -30,3 +29,71 @@
     dest: /usr/lib/systemd/system/php-fpm.service
     state: link
     force: yes
+
+- name: "link the binaries {{ item }}"
+  shell: "{{ item }}"
+  with_items:
+    - [[ -f /usr/bin/php ]] || ln -s `which php70` /usr/bin/php
+    - [[ -f /usr/bin/php-cgi ]] || ln -s `which php70-cgi` /usr/bin/php-cgi
+    - [[ -f /usr/bin/php-phar ]] || ln -s `which php70-phar` /usr/bin/php-phar
+
+- name: link the php-fpm configs - php-fpm.conf
+  file:
+    src: /etc/opt/remi/php70/php-fpm.conf
+    dest: /etc/php-fpm.conf
+    state: link
+    force: yes
+
+- name: link the php-fpm configs - php-fpm.d directory
+  file:
+    src: /etc/opt/remi/php70/php-fpm.d
+    dest: /etc/php-fpm.d
+    state: link
+
+- name: create php-fpm directory
+  file:
+    path: /var/log/php-fpm
+    owner: nginx
+    group: nginx
+    state: directory
+    recurse: yes
+
+- name: "create directory {{ item }}"
+  file:
+    path: "{{ item }}"
+    owner: nginx
+    group: nginx
+    state: directory
+    recurse: yes
+  with_items:
+    - /var/lib/php/session
+    - /var/lib/php/wsdlcache
+    - /var/lib/php/opcache
+
+#- name: set php-fpm user to nginx
+#  lineinfile:
+#    path: /etc/php-fpm.d/www.conf
+#    regexp: '^user ='
+#    line: 'user = nginx'
+
+#- name: set php-fpm group to nginx
+#  lineinfile:
+#    path: /etc/php-fpm.d/www.conf
+#    regexp: '^group ='
+#    line: 'group = nginx'
+
+#- name: set php-fpm error log location
+#  lineinfile:
+#    path: /etc/php-fpm.d/www.conf
+#    regexp: '^/var/opt/remi/php70/log/php-fpm/www-error.log'
+#    line: '/var/log/php-fpm/www-error.log'
+
+- name: "replace values in /etc/php-fpm.d/www.conf {{ item }}"
+  shell: "{{ item }}"
+  with_items:
+    - sed -i -e 's/user = apache/user = nginx/' /etc/php-fpm.d/www.conf
+    - sed -i -e 's/group = apache/group = nginx/' /etc/php-fpm.d/www.conf
+    - sed -i -e 's|/var/opt/remi/php70/log/php-fpm/www-error.log|/var/log/php-fpm/www-error.log|' /etc/php-fpm.d/www.conf
+    - sed -i -e 's|/var/opt/remi/php70/lib/php/session|/var/lib/php/session|' /etc/php-fpm.d/www.conf
+    - sed -i -e 's|/var/opt/remi/php70/lib/php/wsdlcache|/var/lib/php/wsdlcache|' /etc/php-fpm.d/www.conf
+    - sed -i -e 's|/var/opt/remi/php70/lib/php/opcache|/var/lib/php/opcache|' /etc/php-fpm.d/www.conf

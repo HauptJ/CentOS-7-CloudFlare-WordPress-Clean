@@ -7,39 +7,102 @@
     name: redis
     state: present
 
-- name: Create redis user
-  user:
-    name: redis
-    system: yes
-    shell: /bin/nologin
-    createhome: no
-    groups: wordpress
+#- name: Create redis user
+#  user:
+#    name: redis
+#    system: yes
+#    shell: /bin/nologin
+#    createhome: no
+#    groups: wordpress
 
-- name: Create directory for redis pid file
-  file:
-    path: /var/run/redis
-    state: directory
+#- name: Create directory for redis pid file
+#  file:
+#    path: /var/run/redis
+#    state: directory
 
-- name: Create directory for redis
-  file:
-    path: /var/run/redis
-    owner: redis
-    group: wordpress
-    recurse: yes
+#- name: Create directory for redis
+#  file:
+#    path: /var/run/redis
+#    owner: redis
+#    group: wordpress
+#    recurse: yes
 
 #- name: Copy object-cache.php for Wordpress
 #  template:
 #    src: object-cache.php
 #    dest: /srv/wordpress/wp-content/
 
-- name: Copy redis.conf for Redis
-  template:
-    src: redis.conf
-    dest: /etc/
+#- name: Copy redis.conf for Redis
+#  template:
+#    src: redis.conf
+#    dest: /etc/
 
-- name: Enable redis php extension
-  lineinfile:
-    path: /etc/php-zts.d/redis.ini
-    regexp: '^extension='
-    line: 'extension=redis.so'
-  notify: Restart redis
+#- name: Enable redis php extension
+#  lineinfile:
+#    path: /etc/php-zts.d/redis.ini
+#    regexp: '^extension='
+#    line: 'extension=redis.so'
+#  notify: Restart redis
+
+- name: fix redis background saves on low memory
+  block:
+    - command: sysctl vm.overcommit_memory=1
+    - lineinfile:
+        path: /etc/sysctl.d/88-vm.overcommit_memory.conf
+        regexp: '^vm.overcommit_memory ='
+        line: 'vm.overcommit_memory = 1'
+
+- name: increase max connections
+  block:
+    - command: sysctl -w net.core.somaxconn=65535
+    - lineinfile:
+        path: /etc/sysctl.d/88-net.core.somaxconn.conf
+        regexp: '^net.core.somaxconn ='
+        line: 'net.core.somaxconn = 65535'
+
+    - command: sysctl -w fs.file-max=100000
+    - lineinfile:
+        path: /etc/sysctl.d/88-fs.file-max.conf
+        regexp: '^fs.file-max ='
+        line: 'fs.file-max = 100000'
+
+    - command: sed -i "s|^tcp-backlog [[:digit:]]\+|tcp-backlog 65535|" /etc/redis.conf
+
+- name: enable redis service on reboot
+  service:
+    name: redis
+    enabled: yes
+
+- name: start or restart redis
+  shell: (service redis status > /dev/null && service redis restart) || service redis start
+
+- name: Copy disable-transparent-hugepages
+  copy:
+    src: disable-transparent-hugepages
+    dest: /etc/init.d/disable-transparent-hugepages
+
+- name: Set permissions for disable-transparent-hugepages
+  file:
+    path: /etc/init.d/disable-transparent-hugepages
+    mode: 755
+
+- name: execute disable-transparent-hugepages
+  shell: chkconfig --add disable-transparent-hugepages
+  args:
+    chdir: /etc/init.d/
+    #creates: ??? or
+
+- name: Configure Tuned, CentOS 7
+  block:
+    - file:
+        path: /etc/tuned/no-thp
+        state: directory
+
+    - copy:
+        src: tuned.conf
+        dest: /etc/tuned/no-thp/tuned.conf
+
+    - command: tuned-adm profile no-thp
+      args:
+        chdir: /etc/tuned/no-thp/
+        #creates: ???
