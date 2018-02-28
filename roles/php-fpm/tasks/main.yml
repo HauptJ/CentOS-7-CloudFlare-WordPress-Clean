@@ -1,27 +1,32 @@
 ---
-- name: Install php-fpm and deps
+- name: install php7 and modules
   yum:
     name: "{{ item }}"
     state: present
   with_items:
-    - php
-    - php-fpm
-    - php-enchant
-    - php-IDNA_Convert
-    - php-mbstring
-    - php-mysql
-    - php-PHPMailer
-    - php-process
-    - php-simplepie
-    - php-xml
-    - php-pecl-redis # Redis
+    - php70
+    - php70-php-fpm
+    - php70-php-gd
+    - php70-php-json
+    - php70-php-mbstring
+    - php70-php-mysqlnd
+    - php70-php-pdo
+    - php70-php-pecl-apcu
+    - php70-php-pecl-apcu-bc
+    - php70-php-pecl-igbinary
+    - php70-php-pecl-imagick
+    - php70-php-pecl-redis # Redis
+    - php70-php-xml
 
-- name: Disable default pool
-  command: mv /etc/php-fpm.d/www.conf /etc/php-fpm.d/www.disabled creates=/etc/php-fpm.d/www.disabled
-  notify: restart php-fpm
+- name: start php-fpm at boot
+  service:
+    name: nginx
+    state: started
+    enabled: yes
 
-- name: Copy php-fpm configuration
-  template:
-    src: wordpress.conf
-    dest: /etc/php-fpm.d/
-  notify: restart php-fpm
+- name: link the systemd service to "php-fpm"
+  file:
+    src: /usr/lib/systemd/system/php70-php-fpm.service
+    dest: /usr/lib/systemd/system/php-fpm.service
+    state: link
+    force: yes
