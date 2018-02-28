@@ -1,6 +1,6 @@
 ---
 - name: Install Fail2ban, WordPress, Redis, MariaDB, Nginx, and PHP-FPM
-  hosts: wp-dev
+  hosts: wordpress
   strategy: debug
   remote_user: centos
   become: yes
@@ -8,12 +8,12 @@
 
   roles:
     - { role: ipv6, when: ipv6_setup == true, become: yes, become_method: sudo, become_user: root }
-    - repos
-    - { role: updates, when: auto_updates == true }
-    - selinux
-    - fail2ban
-    - mariadb
-    - nginx
-    - php-fpm
-    - wordpress
+  #  - repos
+  #  - { role: updates, when: auto_updates == true }
+  #  - selinux
+  #  - fail2ban
+  #  - mariadb
+  #  - nginx
+  #  - php-fpm
+  #  - wordpress
     - redis

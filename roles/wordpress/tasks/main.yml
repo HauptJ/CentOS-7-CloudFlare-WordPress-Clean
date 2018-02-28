@@ -32,6 +32,8 @@
   mysql_db:
     name: "{{ wp_db_name }}"
     state: present
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
   when: wp_new_db == true
 
 - name: Copy database {{ wp_db_name }} file
@@ -45,6 +47,8 @@
     name: "{{ wp_db_name }}"
     state: import
     target: /tmp/{{ wp_db_name }}.sql.bz2
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
   when: wp_new_db == false
 
 - name: Create WordPress database user
@@ -53,6 +57,8 @@
     password: "{{ wp_db_password }}"
     priv: "{{ wp_db_name }}.*:ALL"
     host: 'localhost'
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
     state: present
 
 - name: Copy WordPress config file

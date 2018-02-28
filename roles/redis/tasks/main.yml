@@ -11,8 +11,7 @@
   user:
     name: redis
     system: yes
-    shell: /bin/nologin
-    createhome: no
+    shell: /bin/bash
     groups: wordpress
 
 - name: Create directory for redis pid file
@@ -22,7 +21,7 @@
 
 - name: Create directory for redis
   file:
-    path: /var/run/redis
+    path: /var/run/redis/
     owner: redis
     group: wordpress
     recurse: yes
@@ -37,9 +36,14 @@
     src: redis.conf
     dest: /etc/
 
+- name: Copy redis-server.service
+  template:
+    src: redis-server.service
+    dest: /usr/lib/systemd/system/redis.service
+
 - name: Enable redis php extension
   lineinfile:
     path: /etc/php-zts.d/redis.ini
     regexp: '^extension='
     line: 'extension=redis.so'
-  notify: Restart redis
+  #notify: Restart redis

@@ -4,12 +4,13 @@ After=network.target
 
 [Service]
 Type=forking
-PIDFile=/var/run/redis/redis.pid
+#PIDFile=/var/run/redis/redis.pid
 User=redis
 Group=wordpress
+RuntimeDirectoryMode=2755
 ExecStartPre=/bin/mkdir -p /var/run/redis
 ExecStartPre=/bin/chown redis:wordpress /var/run/redis
-ExecStart=/sbin/start-stop-daemon --start --pidfile /var/run/redis/redis.pid --umask 007 --exec /usr/bin/redis-server -- /etc/redis.conf
+ExecStart=exec /usr/bin/redis-server /etc/redis.conf
 ExecReload=/bin/kill -USR2 $MAINPID
 ExecStop=/usr/bin/redis-cli shutdown
 Restart=always
