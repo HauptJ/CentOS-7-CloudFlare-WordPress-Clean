@@ -46,11 +46,15 @@
 
 - name: fix redis background saves on low memory
   block:
-    - command: sysctl vm.overcommit_memory=1
-    - lineinfile:
+    - name: sysctl vm.overcommit_memory=1
+      command: sysctl vm.overcommit_memory=1
+
+    - name: create 88-vm.overcommit_memory.conf and set vm.overcommit_memory = 1
+      lineinfile:
         path: /etc/sysctl.d/88-vm.overcommit_memory.conf
         regexp: '^vm.overcommit_memory ='
         line: 'vm.overcommit_memory = 1'
+        create: yes
 
 - name: increase max connections
   block:
