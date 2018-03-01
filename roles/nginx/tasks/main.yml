@@ -117,10 +117,10 @@
     - restart nginx
 
 
-- name: insert firewalld rule for nginx port {{ nginx_port }}
-  firewalld:
-    port: "{{ nginx_port }}/tcp"
-    permanent: true
-    state: enabled
-    immediate: yes
-  ignore_errors: yes
+#- name: insert firewalld rule for nginx port {{ nginx_port }}
+#  firewalld:
+#    port: "{{ nginx_port }}/tcp"
+#    permanent: true
+#    state: enabled
+#    immediate: yes
+#  ignore_errors: yes
