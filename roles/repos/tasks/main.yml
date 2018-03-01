@@ -14,10 +14,15 @@
     src: remi.repo
     dest: /etc/yum.repos.d/
 
-- name: Create the GPG key for NGINX
-  copy:
-    src: RPM-GPG-KEY-NGINX
-    dest: /etc/pki/rpm-gpg
+#- name: install the remi-safe.repo
+#  copy:
+#    src: remi-safe.repo
+#    dest: /etc/yum.repos.d/remi-safe.repo
+
+#- name: Create the GPG key for NGINX
+#  copy:
+#    src: RPM-GPG-KEY-NGINX
+#    dest: /etc/pki/rpm-gpg
 
 - name: Create the GPG key for EPEL
   copy:

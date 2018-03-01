@@ -1,12 +1,17 @@
 ---
 # This playbook will install MariaDB and create db user and give permissions.
 
+- name: Install mariadb repo
+  copy:
+    src: mariadb.repo
+    dest: /etc/yum.repos.d/mariadb.repo
+
 - name: Install MariaDB package
   yum:
     name: "{{ item }}"
     state: installed
   with_items:
-   - mariadb-server
+   - MariaDB-server
    - MySQL-python
    - libselinux-python
    - libsemanage-python
@@ -45,7 +50,7 @@
     src: my.cnf.j2
     dest: /etc/my.cnf
   notify:
-  - restart mariadb
+    - restart mariadb
 
 - name: Create MariaDB log file
   file:
@@ -74,6 +79,8 @@
     login_user: root
     login_password: ""
     state: present
+  notify:
+    - restart mariadb
 
 - name: Add firewalld rule for MariaDB to open port {{ mariadb_port }}
   firewalld:

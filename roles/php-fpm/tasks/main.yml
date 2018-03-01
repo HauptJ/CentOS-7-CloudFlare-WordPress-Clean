@@ -1,31 +1,36 @@
 ---
+- name: install the remi-safe.repo
+  copy:
+    src: remi-safe.repo
+    dest: /etc/yum.repos.d/remi-safe.repo
+
 - name: "install php7 and modules {{ item }}"
   yum:
     name: "{{ item }}"
     state: present
   with_items:
-    - php70
-    - php70-php-fpm
-    - php70-php-gd
-    - php70-php-json
-    - php70-php-mbstring
-    - php70-php-mysqlnd
-    - php70-php-pdo
-    - php70-php-pecl-apcu
-    - php70-php-pecl-apcu-bc
-    - php70-php-pecl-igbinary
-    - php70-php-pecl-imagick
-    - php70-php-pecl-redis # Redis
-    - php70-php-xml
+    - php71
+    - php71-php-fpm
+    - php71-php-gd
+    - php71-php-json
+    - php71-php-mbstring
+    - php71-php-mysqlnd
+    - php71-php-pdo
+    - php71-php-pecl-apcu
+    - php71-php-pecl-apcu-bc
+    - php71-php-pecl-igbinary
+    - php71-php-pecl-imagick
+    - php71-php-pecl-redis # Redis
+    - php71-php-xml
 
 - name: start php-fpm at boot
   service:
-    name: nginx
+    name: php71-php-fpm
     enabled: yes
 
 - name: link the systemd service to "php-fpm"
   file:
-    src: /usr/lib/systemd/system/php70-php-fpm.service
+    src: /usr/lib/systemd/system/php71-php-fpm.service
     dest: /usr/lib/systemd/system/php-fpm.service
     state: link
     force: yes
@@ -33,9 +38,9 @@
 - name: "link the binaries {{ item }}"
   shell: "{{ item }}"
   with_items:
-    - [[ -f /usr/bin/php ]] || ln -s `which php70` /usr/bin/php
-    - [[ -f /usr/bin/php-cgi ]] || ln -s `which php70-cgi` /usr/bin/php-cgi
-    - [[ -f /usr/bin/php-phar ]] || ln -s `which php70-phar` /usr/bin/php-phar
+    - [[ -f /usr/bin/php ]] || ln -s `which php71` /usr/bin/php
+    - [[ -f /usr/bin/php-cgi ]] || ln -s `which php71-cgi` /usr/bin/php-cgi
+    - [[ -f /usr/bin/php-phar ]] || ln -s `which php71-phar` /usr/bin/php-phar
 
 - name: link the php-fpm configs - php-fpm.conf
   file:
@@ -93,7 +98,7 @@
   with_items:
     - sed -i -e 's/user = apache/user = nginx/' /etc/php-fpm.d/www.conf
     - sed -i -e 's/group = apache/group = nginx/' /etc/php-fpm.d/www.conf
-    - sed -i -e 's|/var/opt/remi/php70/log/php-fpm/www-error.log|/var/log/php-fpm/www-error.log|' /etc/php-fpm.d/www.conf
-    - sed -i -e 's|/var/opt/remi/php70/lib/php/session|/var/lib/php/session|' /etc/php-fpm.d/www.conf
-    - sed -i -e 's|/var/opt/remi/php70/lib/php/wsdlcache|/var/lib/php/wsdlcache|' /etc/php-fpm.d/www.conf
-    - sed -i -e 's|/var/opt/remi/php70/lib/php/opcache|/var/lib/php/opcache|' /etc/php-fpm.d/www.conf
+    - sed -i -e 's|/var/opt/remi/php71/log/php-fpm/www-error.log|/var/log/php-fpm/www-error.log|' /etc/php-fpm.d/www.conf
+    - sed -i -e 's|/var/opt/remi/php71/lib/php/session|/var/lib/php/session|' /etc/php-fpm.d/www.conf
+    - sed -i -e 's|/var/opt/remi/php71/lib/php/wsdlcache|/var/lib/php/wsdlcache|' /etc/php-fpm.d/www.conf
+    - sed -i -e 's|/var/opt/remi/php71/lib/php/opcache|/var/lib/php/opcache|' /etc/php-fpm.d/www.conf

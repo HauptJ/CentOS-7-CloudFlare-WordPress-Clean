@@ -7,13 +7,13 @@
 
 
   roles:
-    - { role: ipv6, when: ipv6_setup == true, become: yes, become_method: sudo, become_user: root }
+    #- { role: ipv6, when: ipv6_setup == true, become: yes, become_method: sudo, become_user: root }
     - repos
-    - { role: updates, when: auto_updates == true }
-    - selinux
-    - fail2ban
-    - mariadb
+    #- { role: updates, when: auto_updates == true }
+    #- selinux
+    #- fail2ban
+    #- mariadb
     - nginx
     - php-fpm
-    - wordpress
+    #- wordpress
     - redis
