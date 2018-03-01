@@ -1,11 +1,6 @@
 ---
   # Tasks to install and configure Nginx
 
-- name: install nginx repo
-  copy:
-    src: nginx.repo
-    dest: /etc/yum.repos.d/nginx.repo
-
 - name: Install nginx
   yum:
     name: nginx

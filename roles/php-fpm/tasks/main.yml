@@ -1,9 +1,4 @@
 ---
-- name: install the remi-safe.repo
-  copy:
-    src: remi-safe.repo
-    dest: /etc/yum.repos.d/remi-safe.repo
-
 - name: "install php7 and modules {{ item }}"
   yum:
     name: "{{ item }}"
@@ -38,9 +33,9 @@
 - name: "link the binaries {{ item }}"
   shell: "{{ item }}"
   with_items:
-    - [[ -f /usr/bin/php ]] || ln -s `which php71` /usr/bin/php
-    - [[ -f /usr/bin/php-cgi ]] || ln -s `which php71-cgi` /usr/bin/php-cgi
-    - [[ -f /usr/bin/php-phar ]] || ln -s `which php71-phar` /usr/bin/php-phar
+    - '[[ -f /usr/bin/php ]] || ln -s `which php71` /usr/bin/php'
+    - '[[ -f /usr/bin/php-cgi ]] || ln -s `which php71-cgi` /usr/bin/php-cgi'
+    - '[[ -f /usr/bin/php-phar ]] || ln -s `which php71-phar` /usr/bin/php-phar'
 
 - name: link the php-fpm configs - php-fpm.conf
   file:
@@ -96,9 +91,9 @@
 - name: "replace values in /etc/php-fpm.d/www.conf {{ item }}"
   shell: "{{ item }}"
   with_items:
-    - sed -i -e 's/user = apache/user = nginx/' /etc/php-fpm.d/www.conf
-    - sed -i -e 's/group = apache/group = nginx/' /etc/php-fpm.d/www.conf
-    - sed -i -e 's|/var/opt/remi/php71/log/php-fpm/www-error.log|/var/log/php-fpm/www-error.log|' /etc/php-fpm.d/www.conf
-    - sed -i -e 's|/var/opt/remi/php71/lib/php/session|/var/lib/php/session|' /etc/php-fpm.d/www.conf
-    - sed -i -e 's|/var/opt/remi/php71/lib/php/wsdlcache|/var/lib/php/wsdlcache|' /etc/php-fpm.d/www.conf
-    - sed -i -e 's|/var/opt/remi/php71/lib/php/opcache|/var/lib/php/opcache|' /etc/php-fpm.d/www.conf
+    - 'sed -i -e 's/user = apache/user = nginx/' /etc/php-fpm.d/www.conf'
+    - 'sed -i -e 's/group = apache/group = nginx/' /etc/php-fpm.d/www.conf'
+    - 'sed -i -e 's|/var/opt/remi/php71/log/php-fpm/www-error.log|/var/log/php-fpm/www-error.log|' /etc/php-fpm.d/www.conf'
+    - 'sed -i -e 's|/var/opt/remi/php71/lib/php/session|/var/lib/php/session|' /etc/php-fpm.d/www.conf'
+    - 'sed -i -e 's|/var/opt/remi/php71/lib/php/wsdlcache|/var/lib/php/wsdlcache|' /etc/php-fpm.d/www.conf'
+    - 'sed -i -e 's|/var/opt/remi/php71/lib/php/opcache|/var/lib/php/opcache|' /etc/php-fpm.d/www.conf'
