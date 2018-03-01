@@ -71,13 +71,14 @@
     - name: sysctl -w fs.file-max=100000
       command: sysctl -w fs.file-max=100000
 
-    - name: this be temp
+    - name: create 88-fs.file-max.conf and set fs.file-max = 100000
       lineinfile:
         path: /etc/sysctl.d/88-fs.file-max.conf
         regexp: '^fs.file-max ='
         line: 'fs.file-max = 100000'
+        create: yes
 
-    - name: set tcp-backlog
+    - name: set tcp-backlog 65535
       command: sed -i "s|^tcp-backlog [[:digit:]]\+|tcp-backlog 65535|" /etc/redis.conf
 
 - name: enable redis service on reboot
