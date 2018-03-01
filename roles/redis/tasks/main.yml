@@ -58,19 +58,27 @@
 
 - name: increase max connections
   block:
-    - command: sysctl -w net.core.somaxconn=65535
-    - lineinfile:
+    - name: sysctl -w net.core.somaxconn=65535
+      command: sysctl -w net.core.somaxconn=65535
+
+    - name: create 88-net.core.somaxconn.conf and set net.core.somaxconn = 65535
+      lineinfile:
         path: /etc/sysctl.d/88-net.core.somaxconn.conf
         regexp: '^net.core.somaxconn ='
         line: 'net.core.somaxconn = 65535'
+        create: yes
 
-    - command: sysctl -w fs.file-max=100000
-    - lineinfile:
+    - name: sysctl -w fs.file-max=100000
+      command: sysctl -w fs.file-max=100000
+
+    - name: this be temp
+      lineinfile:
         path: /etc/sysctl.d/88-fs.file-max.conf
         regexp: '^fs.file-max ='
         line: 'fs.file-max = 100000'
 
-    - command: sed -i "s|^tcp-backlog [[:digit:]]\+|tcp-backlog 65535|" /etc/redis.conf
+    - name: set tcp-backlog
+      command: sed -i "s|^tcp-backlog [[:digit:]]\+|tcp-backlog 65535|" /etc/redis.conf
 
 - name: enable redis service on reboot
   service:
