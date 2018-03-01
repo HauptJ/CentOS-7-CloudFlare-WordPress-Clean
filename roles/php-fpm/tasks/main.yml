@@ -46,7 +46,7 @@
 
 - name: link the php-fpm configs - php-fpm.d directory
   file:
-    src: /etc/opt/remi/php70/php-fpm.d
+    src: /etc/opt/remi/php71/php-fpm.d
     dest: /etc/php-fpm.d
     state: link
 
