@@ -59,10 +59,10 @@
     src: virtualhost.conf
     dest: /etc/nginx/sites-available/virtualhost.conf
 
-- name: Copy nginx blacklist configuration
-  template:
-    src: blacklist.conf
-    dest: /etc/nginx/includes/blacklist.conf
+#- name: Copy nginx blacklist configuration
+#  template:
+#    src: blacklist.conf
+#    dest: /etc/nginx/includes/blacklist.conf
 
 - name: Copy nginx cloudflare configuration
   template:
@@ -79,11 +79,11 @@
     src: sites-enabled.conf
     dest: /etc/nginx/includes/sites-enabled.conf
 
-- name: Link blacklist.conf to /etc/nginx/conf.d
-  file:
-    src: /etc/nginx/includes/blacklist.conf
-    dest: /etc/nginx/conf.d/_.blacklist.conf
-    state: link
+#- name: Link blacklist.conf to /etc/nginx/conf.d
+#  file:
+#    src: /etc/nginx/includes/blacklist.conf
+#    dest: /etc/nginx/conf.d/_.blacklist.conf
+#    state: link
 
 - name: Link cloudflare.conf to /etc/nginx/conf.d
   file:
