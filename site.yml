@@ -12,7 +12,7 @@
     #- { role: updates, when: auto_updates == true }
     - selinux
     #- fail2ban
-    #- mariadb
+    - mariadb
     - nginx
     - php-fpm
     #- wordpress
