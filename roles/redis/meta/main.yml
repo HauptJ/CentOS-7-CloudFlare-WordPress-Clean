@@ -1,5 +1,5 @@
 ---
 # Includes necessary handlers from Nginx and PHP-fpm
-dependencies:
-- { role: nginx }
-- { role: php-fpm }
+#dependencies:
+#- { role: nginx }
+#- { role: php-fpm }
