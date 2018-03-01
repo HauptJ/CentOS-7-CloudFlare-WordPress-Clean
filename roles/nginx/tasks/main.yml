@@ -11,33 +11,33 @@
     name: nginx
     enabled: yes
 
-- name: enable httpd in selinux
-  command: semanage permissive -a httpd_t
+#- name: enable httpd in selinux
+#  command: semanage permissive -a httpd_t
 
-- name: Install python-passlib to use htpasswd module
-  yum:
-    name: python-passlib
-    state: present
+#- name: Install python-passlib to use htpasswd module
+#  yum:
+#    name: python-passlib
+#    state: present
 
-- name: Create SSL key directory
-  file:
-    path: /etc/ssl/private
-    state: directory
-    mode: 0700
+#- name: Create SSL key directory
+#  file:
+#    path: /etc/ssl/private
+#    state: directory
+#    mode: 0700
 
-- name: Generate self-signed key and certificate pair with OpenSSL
-  command: openssl req -x509 -nodes -subj "/C=US/ST=Illinois/L=Hell/O=IT/CN=hauptj.com" -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
+#- name: Generate self-signed key and certificate pair with OpenSSL
+#  command: openssl req -x509 -nodes -subj "/C=US/ST=Illinois/L=Hell/O=IT/CN=hauptj.com" -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
 
-- name: Generate dhparam
-  command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
-  notify: restart nginx
+#- name: Generate dhparam
+#  command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+#  notify: restart nginx
 
-- name: Generate password file for wp-admin directory
-  htpasswd:
-    path: /etc/nginx/conf.d/.htpasswd
-    name: "{{ htpasswd_user }}"
-    password: "{{ htpasswd_pass }}"
-    crypt_scheme: md5_crypt
+#- name: Generate password file for wp-admin directory
+#  htpasswd:
+#    path: /etc/nginx/conf.d/.htpasswd
+#    name: "{{ htpasswd_user }}"
+#    password: "{{ htpasswd_pass }}"
+#    crypt_scheme: md5_crypt
 
 - name: start nginx
   service:
