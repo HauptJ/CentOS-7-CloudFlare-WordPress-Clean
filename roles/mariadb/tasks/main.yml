@@ -1,11 +1,6 @@
 ---
 # This playbook will install MariaDB and create db user and give permissions.
 
-- name: Install mariadb repo
-  copy:
-    src: mariadb.repo
-    dest: /etc/yum.repos.d/mariadb.repo
-
 - name: Install MariaDB package
   yum:
     name: "{{ item }}"

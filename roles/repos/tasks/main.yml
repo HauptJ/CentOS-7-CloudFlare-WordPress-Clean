@@ -14,6 +14,11 @@
     src: remi.repo
     dest: /etc/yum.repos.d/
 
+- name: Install mariadb repo
+  copy:
+    src: mariadb.repo
+    dest: /etc/yum.repos.d/mariadb.repo
+
 #- name: install the remi-safe.repo
 #  copy:
 #    src: remi-safe.repo
