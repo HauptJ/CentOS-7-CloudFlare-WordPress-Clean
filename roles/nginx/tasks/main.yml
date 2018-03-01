@@ -79,6 +79,11 @@
     src: sites-enabled.conf
     dest: /etc/nginx/includes/sites-enabled.conf
 
+- name: Copy ssl configuration
+  template:
+    src: ssl.conf
+    dest: /etc/nginx/includes/ssl.conf
+
 #- name: Link blacklist.conf to /etc/nginx/conf.d
 #  file:
 #    src: /etc/nginx/includes/blacklist.conf
