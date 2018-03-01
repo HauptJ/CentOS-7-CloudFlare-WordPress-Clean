@@ -44,6 +44,7 @@
   service:
     name: nginx
     state: started
+  ignore_errors: true
 
 - name: make includes, sites-available, and sites-enabled directories
   file:
