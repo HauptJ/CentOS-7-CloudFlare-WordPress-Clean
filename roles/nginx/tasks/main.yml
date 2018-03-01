@@ -13,6 +13,7 @@
 
 - name: enable httpd in selinux
   shell: "semanage permissive -a httpd_t"
+  when: sel_disable == false
 
 #- name: Install python-passlib to use htpasswd module
 #  yum:
