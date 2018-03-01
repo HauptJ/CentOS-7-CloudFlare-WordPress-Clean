@@ -91,9 +91,9 @@
 - name: "replace values in /etc/php-fpm.d/www.conf {{ item }}"
   shell: "{{ item }}"
   with_items:
-    - 'sed -i -e 's/user = apache/user = nginx/' /etc/php-fpm.d/www.conf'
-    - 'sed -i -e 's/group = apache/group = nginx/' /etc/php-fpm.d/www.conf'
-    - 'sed -i -e 's|/var/opt/remi/php71/log/php-fpm/www-error.log|/var/log/php-fpm/www-error.log|' /etc/php-fpm.d/www.conf'
-    - 'sed -i -e 's|/var/opt/remi/php71/lib/php/session|/var/lib/php/session|' /etc/php-fpm.d/www.conf'
-    - 'sed -i -e 's|/var/opt/remi/php71/lib/php/wsdlcache|/var/lib/php/wsdlcache|' /etc/php-fpm.d/www.conf'
-    - 'sed -i -e 's|/var/opt/remi/php71/lib/php/opcache|/var/lib/php/opcache|' /etc/php-fpm.d/www.conf'
+    - "sed -i -e 's/user = apache/user = nginx/' /etc/php-fpm.d/www.conf"
+    - "sed -i -e 's/group = apache/group = nginx/' /etc/php-fpm.d/www.conf"
+    - "sed -i -e 's|/var/opt/remi/php71/log/php-fpm/www-error.log|/var/log/php-fpm/www-error.log|' /etc/php-fpm.d/www.conf"
+    - "sed -i -e 's|/var/opt/remi/php71/lib/php/session|/var/lib/php/session|' /etc/php-fpm.d/www.conf"
+    - "sed -i -e 's|/var/opt/remi/php71/lib/php/wsdlcache|/var/lib/php/wsdlcache|' /etc/php-fpm.d/www.conf"
+    - "sed -i -e 's|/var/opt/remi/php71/lib/php/opcache|/var/lib/php/opcache|' /etc/php-fpm.d/www.conf"
