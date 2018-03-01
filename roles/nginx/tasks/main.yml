@@ -11,8 +11,8 @@
     name: nginx
     enabled: yes
 
-#- name: enable httpd in selinux
-#  command: semanage permissive -a httpd_t
+- name: enable httpd in selinux
+  shell: "semanage permissive -a httpd_t"
 
 #- name: Install python-passlib to use htpasswd module
 #  yum:
