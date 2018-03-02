@@ -1,4 +1,4 @@
-Centos 7 NGINX Wordpress with CloudFlare
+CentOS 7 NGINX Wordpress with CloudFlare
 ======================================
 
 [![Build Status](https://travis-ci.org/HauptJ/CloudPress.svg?branch=master)](https://travis-ci.org/HauptJ/CloudPress)
