@@ -18,3 +18,12 @@ Playbooks
 **dns.yml**: Sets up DNS records using CloudFlare API
 
 **site.yml**: Installs and configures Wordpress
+
+Requires
+---------
+
+A VPS host or Cloud Service Provider (CSP) that supports IPv6.
+
+At least 1 GB of memory.
+
+A [CloudFlare](https://www.cloudflare.com) account with a domain configured.
