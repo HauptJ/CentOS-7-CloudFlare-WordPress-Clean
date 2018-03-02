@@ -15,5 +15,5 @@
     - mariadb
     - nginx
     - php-fpm
-    #- wordpress
+    - wordpress
     - redis

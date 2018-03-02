@@ -12,15 +12,15 @@
     src: https://wordpress.org/latest.tar.gz
     dest: "/var/www/{{ server_hostname }}/html"
 
-- name: Add group "wordpress"
-  group:
-    name: wordpress
+#- name: Add group "wordpress"
+#  group:
+#    name: wordpress
 
-- name: Add user "wordpress"
-  user:
-    name: wordpress
-    group: wordpress
-    home: /srv/wordpress/
+#- name: Add user "wordpress"
+#  user:
+#    name: wordpress
+#    group: wordpress
+#    home: /srv/wordpress/
 
 - name: Fetch random salts for WordPress config
   uri:
