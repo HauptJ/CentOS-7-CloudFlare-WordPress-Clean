@@ -13,7 +13,7 @@
   async: 1000
   poll: 0
   register: mariadb_sleeper
-
+  
 - name: check on mariadb installation
   async_status: jid={{ mariadb_sleeper.ansible_job_id }}
   register: job_result
