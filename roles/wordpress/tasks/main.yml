@@ -6,6 +6,7 @@
 
 - name: Extract WordPress archive
   command: /bin/tar xzvf latest.tar.gz
+  args:
     chdir: /tmp/
     creates: /tmp/wordpress
 
