@@ -2,7 +2,7 @@
 - name: Download Latest version of WordPress
   get_url:
     url: https://wordpress.org/latest.tar.gz
-    dest: /tmp/
+    dest: /tmp/latest.tar.gz
 
 - name: Extract WordPress archive
   command: /bin/tar xzvf latest.tar.gz
