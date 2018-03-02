@@ -10,6 +10,11 @@
     chdir: /tmp/
     creates: /tmp/wordpress
 
+- name: Make {{ server_hostname }} directory
+  file:
+    path: /var/www/{{ server_hostname }}/html
+    state: directory
+
 - name: copy wordpress directory
   shell: cp -a /tmp/wordpress/. /var/www/{{ server_hostname }}/html
   args:
