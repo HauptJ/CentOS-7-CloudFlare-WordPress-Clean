@@ -56,13 +56,13 @@
   notify:
     - restart mariadb
 
-- name: Create MariaDB log file
-  file:
-    path: /var/log/mysqld.log
-    state: touch
-    owner: mysql
-    group: mysql
-    mode: 0775
+#- name: Create MariaDB log file
+#  file:
+#    path: /var/log/mysqld.log
+#    state: touch
+#    owner: mysql
+#    group: mysql
+#    mode: 0775
 
 - name: Reload SELinux connection for mysqld.log
   command: restorecon -v /var/log/mysqld.log
