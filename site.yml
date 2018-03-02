@@ -8,7 +8,7 @@
 
   roles:
     #- { role: ipv6, when: ipv6_setup == true, become: yes, become_method: sudo, become_user: root }
-    #- repos
+    - repos
     #- { role: updates, when: auto_updates == true }
     #- selinux
     #- fail2ban
