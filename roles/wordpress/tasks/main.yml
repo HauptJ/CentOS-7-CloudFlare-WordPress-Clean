@@ -2,25 +2,17 @@
 - name: Download Latest version of WordPress
   get_url:
     url: https://wordpress.org/latest.tar.gz
-    dest: /tmp/wordpress-latest.tar.gz
+    dest: /tmp/
 
-#- name: Extract WordPress archive
-#  command: chdir=/tmp/ /bin/tar xvf wordpress-latest.tar.gz creates=/tmp/wordpress
+- name: Extract WordPress archive
+  command: /bin/tar xzvf latest.tar.gz
+    chdir: /tmp/
+    creates: /tmp/wordpress
 
-- name: download and extract WordPress
-  unarchive:
-    src: https://wordpress.org/latest.tar.gz
-    dest: "/var/www/{{ server_hostname }}/html"
-
-#- name: Add group "wordpress"
-#  group:
-#    name: wordpress
-
-#- name: Add user "wordpress"
-#  user:
-#    name: wordpress
-#    group: wordpress
-#    home: /srv/wordpress/
+- name: copy wordpress directory
+  shell: cp -a /tmp/wordpress/. /var/www/{{ server_hostname }}/html
+  args:
+    creates: "/var/www/{{ server_hostname }}/html"
 
 - name: Fetch random salts for WordPress config
   uri:
@@ -33,7 +25,7 @@
   debug:
     var: wp_salt.content
 
-- name: Create WordPress database {{ wp_db_name }}
+- name: "Create WordPress database {{ wp_db_name }}"
   mysql_db:
     name: "{{ wp_db_name }}"
     state: present
@@ -54,8 +46,8 @@
 
 - name: Create WordPress database user
   mysql_user:
-    name: "{{ wp_db_user }}"
-    password: "{{ wp_db_password }}"
+    #name: "{{ wp_db_user }}"
+    #password: "{{ wp_db_password }}"
     priv: "{{ wp_db_name }}.*:ALL"
     host: 'localhost'
     state: present
@@ -138,3 +130,4 @@
     name: php-fpm
     state: started
     enabled: yes
+  ignore_errors: true

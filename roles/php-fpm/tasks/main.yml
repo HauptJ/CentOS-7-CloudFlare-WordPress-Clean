@@ -1,5 +1,5 @@
 ---
-- name: "install php7 and modules {{ item }}"
+- name: install php7 and modules
   yum:
     name: "{{ item }}"
     state: present
@@ -30,7 +30,7 @@
     state: link
     force: yes
 
-- name: "link the binaries {{ item }}"
+- name: link the binaries
   shell: "{{ item }}"
   with_items:
     - '[[ -f /usr/bin/php ]] || ln -s `which php71` /usr/bin/php'
