@@ -4,7 +4,7 @@
 - name: Install MariaDB package
   yum:
     name: "{{ item }}"
-    state: installed
+    state: latest
   with_items:
    - MariaDB-server
    - MySQL-python
